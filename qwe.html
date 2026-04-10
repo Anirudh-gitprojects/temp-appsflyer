@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppsFlyer S2S API v3 - COMPLETE Integration Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+        }
+
+        .document {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 45px 55px;
+            border-bottom: 4px solid #00d4ff;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: #00d4ff;
+            color: #1a1a2e;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 15px;
+            margin-right: 10px;
+        }
+
+        .header .version {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .content {
+            padding: 45px 55px;
+        }
+
+        .section {
+            margin-bottom: 45px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 4px solid;
+            display: inline-block;
+        }
+
+        .section-title.blue { border-color: #3498db; color: #2c3e50; }
+        .section-title.purple { border-color: #9b59b6; color: #2c3e50; }
+        .section-title.green { border-color: #27ae60; color: #2c3e50; }
+        .section-title.orange { border-color: #e67e22; color: #2c3e50; }
+        .section-title.red { border-color: #e74c3c; color: #2c3e50; }
+        .section-title.teal { border-color: #1abc9c; color: #2c3e50; }
+        .section-title.pink { border-color: #e91e63; color: #2c3e50; }
+
+        .info-card {
+            background: #f8f9fa;
+            border-left: 4px solid;
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .info-card.blue { border-left-color: #3498db; background: #ebf5ff; }
+        .info-card.purple { border-left-color: #9b59b6; background: #f3e8ff; }
+        .info-card.green { border-left-color: #27ae60; background: #e8f8f0; }
+        .info-card.orange { border-left-color: #e67e22; background: #fff3e0; }
+        .info-card.red { border-left-color: #e74c3c; background: #ffe8e8; }
+        .info-card.teal { border-left-color: #1abc9c; background: #e8f8f5; }
+        .info-card.pink { border-left-color: #e91e63; background: #fce4ec; }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 22px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-family: 'Courier New', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .keyword { color: #569cd6; font-weight: 600; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .number { color: #b5cea8; }
+        .property { color: #9cdcfe; }
+        .operator { color: #d4d4d4; }
+
+        .field-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .field-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .field-table td {
+            padding: 14px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 0.9rem;
+        }
+
+        .field-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .source-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+            font-family: monospace;
+        }
+
+        .source-badge.green { background: #27ae60; }
+        .source-badge.blue { background: #3498db; }
+        .source-badge.orange { background: #e67e22; }
+        .source-badge.pink { background: #e91e63; }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 18px 22px;
+            border-radius: 10px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .warning strong {
+            color: #856404;
+            font-size: 1rem;
+        }
+
+        .danger {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 18px 22px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .danger strong {
+            color: #721c24;
+        }
+
+        .success {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 18px 22px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .success strong {
+            color: #155724;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 25px 55px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.85rem;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        hr {
+            margin: 30px 0;
+            border: none;
+            height: 2px;
+            background: linear-gradient(to right, #e0e0e0, #667eea, #e0e0e0);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 0.9rem;
+        }
+
+        .best-practice {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .best-practice h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .event-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-top: 5px solid;
+        }
+        .event-card.activated { border-top-color: #27ae60; }
+        .event-card.trial { border-top-color: #f39c12; }
+        .event-card.subscribed { border-top-color: #3498db; }
+        .event-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        .event-card p {
+            color: #555;
+            margin: 12px 0;
+        }
+        .event-trigger {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            margin-top: 12px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .document {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            .code-block {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .section {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .warning, .danger, .info-card, .best-practice {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="document">
+        <div class="header">
+            <h1>🚀 AppsFlyer S2S API v3</h1>
+            <p style="font-size: 1.2rem; opacity: 0.9; margin-top: 12px;">Server-to-Server Events API — Complete Integration Guide</p>
+            <div style="margin-top: 20px;">
+                <span class="badge">⚡ REST API v3</span>
+                <span class="version">S2S (Server-to-Server)</span>
+                <span class="version">React Native Compatible</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- ==================== HOW IT WORKS ==================== -->
+            <div class="section">
+                <h2 class="section-title blue">📡 How It Works</h2>
+                <div class="info-card blue">
+                    <strong>🔗 The endpoint is:</strong><br>
+                    <code style="background: white; padding: 6px 12px; border-radius: 6px; font-weight: bold; display: inline-block; margin: 10px 0;">POST https://api3.appsflyer.com/inappevent/{app_id}</code><br>
+                    <strong>🔑 Authentication:</strong> You'll need an S2S key to authenticate.<br><br>
+                    <strong>⚠️ The key requirement:</strong> The <code style="background: white; padding: 2px 6px; border-radius: 4px;">appsflyer_id</code> is <span style="color: #e74c3c; font-weight: bold;">mandatory</span> and is used to attribute events. It's generated when a user first installs the app, so you must capture it from the SDK and store it on your backend (mapped to your user/customer ID).
+                </div>
+            </div>
+
+            <!-- ==================== BACKEND IS SOURCE OF TRUTH: LIFECYCLE EVENTS ==================== -->
+            <div class="section">
+                <h2 class="section-title teal">🎯 Backend-Owned Lifecycle Events (Single Source of Truth)</h2>
+                <div class="info-card teal">
+                    <strong>✅ CRITICAL ARCHITECTURE RULE:</strong> The backend owns the three lifecycle events below and is the <strong>single source of truth</strong> for their delivery. 
+                    <span style="background: #e74c3c; color: white; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 8px;">⚠️ Do NOT emit these from the frontend (React Native).</span>
+                    <br><br>
+                    The frontend only handles AppsFlyer SDK initialization, fires custom in-app events, sets <code>customer_user_id</code> via <code>setCustomerUserId(user.id)</code>, and retrieves the AppsFlyer ID. Your backend will send these three milestone events to AppsFlyer S2S API.
+                </div>
+                
+                <div class="event-grid">
+                    <div class="event-card activated">
+                        <h3>🎉 activated</h3>
+                        <p><strong>Trigger:</strong> First booking received by the user</p>
+                        <div class="event-trigger">
+                            📌 <strong>Implementation note:</strong> Trigger inside booking creation handler — check <code>total_bookings == 1</code> before writing to outbox.
+                        </div>
+                    </div>
+                    <div class="event-card trial">
+                        <h3>✨ trial_started</h3>
+                        <p><strong>Trigger:</strong> Trial officially starts</p>
+                        <div class="event-trigger">
+                            ⏱️ Send when user begins free trial (subscription trial period activated).
+                        </div>
+                    </div>
+                    <div class="event-card subscribed">
+                        <h3>💎 subscribed</h3>
+                        <p><strong>Trigger:</strong> First paid subscription transaction</p>
+                        <div class="event-trigger">
+                            💰 Emit after successful payment confirmation for the first subscription.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <pre><span class="comment">// ============================================</span>
+<span class="comment">// BACKEND LOGIC: Event emission (single source of truth)</span>
+<span class="comment">// ============================================</span>
+
+<span class="comment">// 1) activated event (inside booking creation handler)</span>
+<span class="keyword">async function</span> <span class="function">handleBookingCreation</span>(userId, bookingData) {
+  <span class="comment">// Fetch user's total bookings count</span>
+  <span class="keyword">const</span> totalBookings = <span class="keyword">await</span> db.query(
+    <span class="string">'SELECT COUNT(*) FROM bookings WHERE user_id = $1'</span>, [userId]
+  );
+  
+  <span class="comment">// Trigger activated only if this is the FIRST booking</span>
+  <span class="keyword">if</span> (totalBookings === <span class="number">0</span>) {  <span class="comment">// before insert, total is 0</span>
+    <span class="keyword">await</span> <span class="function">sendToAppsFlyerOutbox</span>({
+      <span class="property">userId</span>: userId,
+      <span class="property">eventName</span>: <span class="string">'activated'</span>,
+      <span class="property">eventValue</span>: { <span class="property">af_content_id</span>: <span class="string">'first_booking'</span>, <span class="property">booking_id</span>: bookingData.id }
+    });
+  }
+  
+  <span class="comment">// ... proceed with booking creation</span>
+}
+
+<span class="comment">// 2) trial_started event (when subscription trial begins)</span>
+<span class="keyword">async function</span> <span class="function">handleTrialStart</span>(userId, subscriptionDetails) {
+  <span class="keyword">await</span> <span class="function">sendToAppsFlyerOutbox</span>({
+    <span class="property">userId</span>: userId,
+    <span class="property">eventName</span>: <span class="string">'trial_started'</span>,
+    <span class="property">eventValue</span>: {
+      <span class="property">af_content_id</span>: subscriptionDetails.planId,
+      <span class="property">af_currency</span>: <span class="string">'USD'</span>,
+      <span class="property">trial_duration_days</span>: subscriptionDetails.trialDays
+    }
+  });
+}
+
+<span class="comment">// 3) subscribed event (first paid subscription transaction)</span>
+<span class="keyword">async function</span> <span class="function">handleFirstPaidSubscription</span>(userId, transactionData) {
+  <span class="comment">// Ensure this is the first paid subscription (not trial conversion duplicate)</span>
+  <span class="keyword">const</span> existingPaid = <span class="keyword">await</span> db.query(
+    <span class="string">'SELECT id FROM paid_subscriptions WHERE user_id = $1 LIMIT 1'</span>, [userId]
+  );
+  <span class="keyword">if</span> (existingPaid.rowCount === <span class="number">0</span>) {
+    <span class="keyword">await</span> <span class="function">sendToAppsFlyerOutbox</span>({
+      <span class="property">userId</span>: userId,
+      <span class="property">eventName</span>: <span class="string">'subscribed'</span>,
+      <span class="property">eventValue</span>: {
+        <span class="property">af_revenue</span>: transactionData.amount,
+        <span class="property">af_currency</span>: transactionData.currency,
+        <span class="property">af_content_id</span>: transactionData.planId,
+        <span class="property">af_receipt_id</span>: transactionData.receiptId
+      }
+    });
+  }
+}</pre>
+                </div>
+            </div>
+
+            <!-- ==================== FRONTEND IMPLEMENTATION - BEST PRACTICE ==================== -->
+            <div class="section">
+                <h2 class="section-title pink">📱 FRONTEND IMPLEMENTATION — What Your React Native App NEEDS</h2>
+                
+                <div class="best-practice">
+                    <h3>✅ Best Practice: Send AppsFlyer ID to Backend on Every Login</h3>
+                    <p style="font-size: 1.05rem; margin-bottom: 15px;"><strong>Yes — best practice is to send it on login to a backend endpoint.</strong></p>
+                    
+                    <div class="success">
+                        <strong>🎯 Implementation Steps:</strong><br><br>
+                        1. <strong>Create/Use endpoint like:</strong> <code>POST /api/analytics/appsflyer/link</code><br><br>
+                        2. <strong>Call it after auth success with:</strong>
+                        <ul style="margin-left: 25px; margin-top: 10px;">
+                            <li><code>user_id</code> (or infer from token server-side)</li>
+                            <li><code>appsflyer_id</code></li>
+                            <li><code>platform</code> (ios/android)</li>
+                            <li><code>app_version</code> (optional)</li>
+                        </ul><br>
+                        3. <strong>Do this on login/signup (upsert)</strong> — update the mapping in your database
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <pre><span class="comment">// ============================================</span>
+<span class="comment">// FRONTEND: React Native Implementation</span>
+<span class="comment">// ============================================</span>
+
+<span class="keyword">import</span> appsFlyer <span class="keyword">from</span> <span class="string">'react-native-appsflyer'</span>;
+<span class="keyword">import</span> { Platform } <span class="keyword">from</span> <span class="string">'react-native'</span>;
+
+<span class="comment">// Function to send AppsFlyer ID to your backend</span>
+<span class="keyword">const</span> <span class="function">linkAppsFlyerIdToUser</span> = <span class="keyword">async</span> (userId, appsFlyerId) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> fetch(<span class="string">'https://your-api.com/api/analytics/appsflyer/link'</span>, {
+      <span class="property">method</span>: <span class="string">'POST'</span>,
+      <span class="property">headers</span>: {
+        <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>,
+        <span class="string">'Authorization'</span>: <span class="string">`Bearer ${authToken}`</span>,
+      },
+      <span class="property">body</span>: <span class="function">JSON.stringify</span>({
+        <span class="property">user_id</span>: userId,
+        <span class="property">appsflyer_id</span>: appsFlyerId,
+        <span class="property">platform</span>: Platform.OS,           <span class="comment">// 'ios' or 'android'</span>
+        <span class="property">app_version</span>: <span class="string">'1.2.3'</span>,         <span class="comment">// optional but recommended</span>
+      }),
+    });
+    
+    <span class="keyword">if</span> (response.ok) {
+      console.log(<span class="string">'✅ AppsFlyer ID linked successfully'</span>);
+    }
+  } <span class="keyword">catch</span> (error) {
+    console.error(<span class="string">'❌ Failed to link AppsFlyer ID:'</span>, error);
+  }
+};
+
+<span class="comment">// Call this AFTER successful login/registration</span>
+<span class="keyword">const</span> <span class="function">onLoginSuccess</span> = <span class="keyword">async</span> (user) => {
+  <span class="comment">// 1. Get AppsFlyer ID</span>
+  appsFlyer.getAppsFlyerUID(<span class="keyword">async</span> (err, uid) => {
+    <span class="keyword">if</span> (!err && uid) {
+      <span class="comment">// 2. Send to your backend</span>
+      <span class="keyword">await</span> <span class="function">linkAppsFlyerIdToUser</span>(user.id, uid);
+      
+      <span class="comment">// 3. Set Customer User ID on SDK</span>
+      appsFlyer.setCustomerUserId(user.id, (res) => {
+        console.log(<span class="string">'✅ CUID set on AppsFlyer'</span>, res);
+      });
+    }
+  });
+};</pre>
+                </div>
+            </div>
+
+            <!-- ==================== BACKEND ENDPOINT + OUTBOX ==================== -->
+            <div class="section">
+                <h2 class="section-title green">🖥️ BACKEND — Mapping Endpoint & Outbox Processor</h2>
+                
+                <div class="code-block">
+                    <pre><span class="comment">// ============================================</span>
+<span class="comment">// BACKEND: Express.js - Store mapping + outbox pattern for reliability</span>
+<span class="comment">// ============================================</span>
+
+<span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> router = express.Router();
+
+<span class="comment">// POST /api/analytics/appsflyer/link - store appsflyer_id mapping</span>
+router.post(<span class="string">'/api/analytics/appsflyer/link'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">const</span> { user_id, appsflyer_id, platform, app_version } = req.body;
+  <span class="keyword">await</span> db.query(`
+    INSERT INTO user_appsflyer_mapping (user_id, appsflyer_id, platform, app_version, last_seen)
+    VALUES ($1, $2, $3, $4, NOW())
+    ON CONFLICT (user_id) 
+    DO UPDATE SET appsflyer_id = EXCLUDED.appsflyer_id, last_seen = NOW()
+  `, [user_id, appsflyer_id, platform, app_version]);
+  res.json({ success: <span class="keyword">true</span> });
+});
+
+<span class="comment">// Outbox processor: fetch pending lifecycle events and send to AppsFlyer</span>
+<span class="keyword">async function</span> <span class="function">processAppsFlyerOutbox</span>() {
+  <span class="keyword">const</span> pendingEvents = <span class="keyword">await</span> db.query(`
+    SELECT * FROM appsflyer_outbox 
+    WHERE status = 'pending' ORDER BY created_at LIMIT 100
+  `);
+  
+  <span class="keyword">for</span> (<span class="keyword">const</span> evt of pendingEvents.rows) {
+    <span class="comment">// Get appsflyer_id from mapping table</span>
+    <span class="keyword">const</span> mapping = <span class="keyword">await</span> db.query(
+      <span class="string">'SELECT appsflyer_id, platform FROM user_appsflyer_mapping WHERE user_id = $1'</span>,
+      [evt.user_id]
+    );
+    <span class="keyword">if</span> (!mapping.rows[<span class="number">0</span>]) <span class="keyword">continue</span>;
+    
+    <span class="keyword">const</span> appId = mapping.rows[<span class="number">0</span>].platform === <span class="string">'ios'</span> ? <span class="string">'id1234567890'</span> : <span class="string">'com.yourapp.android'</span>;
+    <span class="keyword">const</span> payload = {
+      <span class="property">appsflyer_id</span>: mapping.rows[<span class="number">0</span>].appsflyer_id,
+      <span class="property">customer_user_id</span>: evt.user_id,
+      <span class="property">eventName</span>: evt.event_name,
+      <span class="property">eventValue</span>: evt.event_value,
+      <span class="property">eventTime</span>: <span class="keyword">new</span> <span class="function">Date</span>().toISOString().replace(<span class="string">'T'</span>, <span class="string">' '</span>).split(<span class="string">'.'</span>)[<span class="number">0</span>],
+    };
+    
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`https://api3.appsflyer.com/inappevent/${appId}`</span>, {
+      <span class="property">method</span>: <span class="string">'POST'</span>,
+      <span class="property">headers</span>: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>, <span class="string">'authentication'</span>: process.env.S2S_TOKEN },
+      <span class="property">body</span>: <span class="function">JSON.stringify</span>(payload),
+    });
+    
+    <span class="keyword">if</span> (response.ok) {
+      <span class="keyword">await</span> db.query(<span class="string">'UPDATE appsflyer_outbox SET status = $1, sent_at = NOW() WHERE id = $2'</span>, [<span class="string">'sent'</span>, evt.id]);
+    }
+  }
+}</pre>
+                </div>
+
+                <div class="warning">
+                    <strong>📊 Outbox Table Schema:</strong><br><br>
+                    <code>
+                    CREATE TABLE appsflyer_outbox (<br>
+                    &nbsp;&nbsp;id SERIAL PRIMARY KEY,<br>
+                    &nbsp;&nbsp;user_id VARCHAR(255) NOT NULL,<br>
+                    &nbsp;&nbsp;event_name VARCHAR(100) NOT NULL,<br>
+                    &nbsp;&nbsp;event_value JSONB,<br>
+                    &nbsp;&nbsp;status VARCHAR(20) DEFAULT 'pending',<br>
+                    &nbsp;&nbsp;created_at TIMESTAMP DEFAULT NOW(),<br>
+                    &nbsp;&nbsp;sent_at TIMESTAMP<br>
+                    );
+                    </code>
+                </div>
+            </div>
+
+            <!-- ==================== EVENT EXAMPLES FOR CUSTOM EVENTS ==================== -->
+            <div class="section">
+                <h2 class="section-title orange">🎯 Sending the Three Backend-Owned Events (activated, trial_started, subscribed)</h2>
+                <div class="code-block">
+                    <pre><span class="comment">// Example: Insert into outbox from business logic</span>
+<span class="keyword">await</span> db.query(<span class="string">`
+  INSERT INTO appsflyer_outbox (user_id, event_name, event_value)
+  VALUES ($1, $2, $3)
+`</span>, [userId, <span class="string">'activated'</span>, JSON.stringify({ <span class="property">af_content_id</span>: <span class="string">'first_booking'</span> })]);
+
+<span class="keyword">await</span> db.query(<span class="string">`
+  INSERT INTO appsflyer_outbox (user_id, event_name, event_value)
+  VALUES ($1, $2, $3)
+`</span>, [userId, <span class="string">'trial_started'</span>, JSON.stringify({ <span class="property">af_content_id</span>: <span class="string">'premium_monthly'</span>, <span class="property">trial_days</span>: <span class="number">7</span> })]);
+
+<span class="keyword">await</span> db.query(<span class="string">`
+  INSERT INTO appsflyer_outbox (user_id, event_name, event_value)
+  VALUES ($1, $2, $3)
+`</span>, [userId, <span class="string">'subscribed'</span>, JSON.stringify({ 
+  <span class="property">af_revenue</span>: <span class="number">9.99</span>, 
+  <span class="property">af_currency</span>: <span class="string">'USD'</span>, 
+  <span class="property">af_content_id</span>: <span class="string">'premium_monthly'</span> 
+})]);</pre>
+                </div>
+            </div>
+
+            <!-- ==================== FIELD REFERENCE TABLE ==================== -->
+            <div class="section">
+                <h2 class="section-title purple">📋 Complete Field Reference Table</h2>
+                <table class="field-table">
+                    <thead><tr><th>Field</th><th>Source</th><th>Required</th><th>Notes</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>appsflyer_id</code></td><td><span class="source-badge">appsFlyer.getAppsFlyerUID()</span></td><td>✅ Mandatory</td><td>Generated on first install, stored in DB mapping</td></tr>
+                        <tr><td><code>customer_user_id</code></td><td><span class="source-badge green">user_id</span></td><td>✅ Recommended</td><td>Your internal user ID for mapping</td></tr>
+                        <tr><td><code>platform</code></td><td><span class="source-badge blue">Platform.OS from RN</span></td><td>✅ Required</td><td>'ios' or 'android'</td></tr>
+                        <tr><td><code>eventName</code></td><td><span class="source-badge orange">activated / trial_started / subscribed</span></td><td>✅ Required</td><td>Backend-owned lifecycle events</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ==================== CRITICAL WARNINGS ==================== -->
+            <div class="section">
+                <h2 class="section-title red">⚠️ Key Constraints & Best Practices</h2>
+                <div class="danger">
+                    <strong>🔴 DO NOT emit lifecycle events from frontend.</strong><br><br>
+                    The backend is the single source of truth for <strong>activated, trial_started, subscribed</strong>. Frontend only handles SDK init, custom in-app events, setting CUID, and retrieving AppsFlyer ID.
+                </div>
+                <div class="warning">
+                    <strong>⏰ activated trigger condition:</strong> Must check <code>total_bookings == 1</code> inside booking creation handler before writing to outbox.
+                </div>
+                <div class="success">
+                    <strong>✅ Every Login/Signup = Upsert mapping!</strong><br><br>
+                    Always send the AppsFlyer ID to your backend on every successful login/signup to keep mapping current.
+                </div>
+            </div>
+
+            <!-- ==================== QUICK REFERENCE ==================== -->
+            <div class="section">
+                <h2 class="section-title blue">📌 Quick Reference Card</h2>
+                <div style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 25px; border-radius: 15px;">
+                    <p><strong>🎯 Endpoint:</strong> <code>POST https://api3.appsflyer.com/inappevent/{app_id}</code></p>
+                    <p><strong>🔑 Auth Header:</strong> <code>authentication: YOUR_S2S_TOKEN</code></p>
+                    <p><strong>📦 Required Fields:</strong> <code>appsflyer_id</code>, <code>eventName</code></p>
+                    <hr style="margin: 15px 0;">
+                    <p><strong>✅ Backend-Owned Events (Single Source of Truth):</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>activated</strong> → first booking (total_bookings == 1)</li>
+                        <li><strong>trial_started</strong> → trial officially starts</li>
+                        <li><strong>subscribed</strong> → first paid subscription transaction</li>
+                    </ul>
+                    <hr style="margin: 15px 0;">
+                    <p><strong>✅ Frontend Implementation Checklist:</strong></p>
+                    <ol style="margin-left: 20px;">
+                        <li>Initialize AppsFlyer SDK</li>
+                        <li>After login: Get AppsFlyer ID via <code>getAppsFlyerUID()</code></li>
+                        <li>Send to backend: <code>POST /api/analytics/appsflyer/link</code></li>
+                        <li>Set Customer User ID: <code>setCustomerUserId(user.id)</code></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📄 <strong>AppsFlyer S2S API v3 Integration Guide</strong> — Backend owns <strong>activated, trial_started, subscribed</strong> events | Do NOT emit from frontend</p>
+            <p style="margin-top: 10px;">🔐 Keep your S2S token secure — never expose it in client-side code</p>
+            <p style="margin-top: 8px;">📌 activated trigger: first booking received by user → check total_bookings == 1 inside booking creation handler</p>
+        </div>
+    </div>
+</body>
+</html>
